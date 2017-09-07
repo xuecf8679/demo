@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<listener>
+		<listener-class>com.bstek.dorado.web.servlet.SpringContextLoaderListener</listener-class>
+	</listener>
+	<context-param>
+	    <param-name>contextConfigLocation</param-name>
+	    <param-value>classpath:ureport-configs.xml</param-value>
+	</context-param>
+
+	<!--<listener>
+		<description>OnlineCountListener</description>
+		<listener-class>myD7Util.myListener.OnlineCountListener</listener-class>
+	</listener>-->
+  
+	<filter>
+		<filter-name>delegatingFilterProxy</filter-name>
+		<filter-class>com.bstek.dorado.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>delegatingFilterProxy</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!--
+	<filter>
+		<filter-name>ViewPageUriInterceptor</filter-name>
+		<filter-class>myD7Util.myFilter.ViewPageUriInterceptor</filter-class>
+		<init-param>
+			<param-name>templateFileEncoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>viewVisitSuffix</param-name>
+			<param-value>.d</param-value>
+		</init-param>
+		<init-param>
+			<param-name>processerMethodDefaultName</param-name>
+			<param-value>processTemplate</param-value>
+		</init-param>
+		<init-param>
+			<param-name>autoTransPath2Url</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cacheTemplate</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>processIncludeObject</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ViewPageUriInterceptor</filter-name>
+		<url-pattern>*.html</url-pattern>
+		<dispatcher>include</dispatcher>
+	</filter-mapping>
+	-->
+	
+	<servlet>
+		<servlet-name>doradoServlet</servlet-name>
+		<servlet-class>com.bstek.dorado.web.servlet.DoradoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>*.d</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>*.c</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>*.dpkg</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>/dorado/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doradoServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 首页 -->
+	<welcome-file-list>
+		<welcome-file>forword.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<session-config>
+        <session-timeout>1200</session-timeout>
+    </session-config>
+
+</web-app>
