@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rdb="http://www.dangdang.com/schema/ddframe/rdb"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.dangdang.com/schema/ddframe/rdb
+        http://www.dangdang.com/schema/ddframe/rdb/rdb.xsd">
+
+    <!-- spring配置自动扫描包 -->
+    <context:component-scan base-package="com"/>
+
+    <bean id="dbConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:location="classpath:DBConfig.properties"/>
+
+    <bean id="dataSource_lu" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close"
+          p:url="${jdbcUrl1}"
+          p:username="${username1}"
+          p:password="${password1}"
+          p:driverClassName="${driverClassName1}"
+          p:maxActive="${maxActive1}"
+          p:initialSize="${initialSize1}"
+          p:maxWait="${maxWait1}"
+          p:minIdle="${minIdle1}"
+          p:timeBetweenEvictionRunsMillis="${timeBetweenEvictionRunsMillis1}"/>
+    <bean id="dataSource_ji" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close"
+          p:url="${jdbcUrl2}"
+          p:username="${username2}"
+          p:password="${password2}"
+          p:driverClassName="${driverClassName2}"
+          p:maxActive="${maxActive2}"
+          p:initialSize="${initialSize2}"
+          p:maxWait="${maxWait2}"
+          p:minIdle="${minIdle2}"
+          p:timeBetweenEvictionRunsMillis="${timeBetweenEvictionRunsMillis2}"/>
+
+    <rdb:strategy id="databaseStrategy_carPosition" sharding-columns="carNo"
+                  algorithm-class="sharding.DatabaseShardingAlgorithm_carPosition"/>
+    <rdb:data-source id="dataSource_sharding">
+        <rdb:sharding-rule data-sources="dataSource_lu,dataSource_ji" default-data-source="dataSource_lu">
+            <rdb:table-rules>
+                <rdb:table-rule logic-table="carPosition_1" actual-tables="carPosition_1"
+                                database-strategy="databaseStrategy_carPosition"/>
+                <rdb:table-rule logic-table="carInfo" actual-tables="carInfo"/>
+            </rdb:table-rules>
+            <rdb:default-database-strategy sharding-columns="none" algorithm-class=
+                        "com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShardingAlgorithm"/>
+            <rdb:default-table-strategy sharding-columns="none"
+                algorithm-class="com.dangdang.ddframe.rdb.sharding.api.strategy.table.NoneTableShardingAlgorithm"/>
+        </rdb:sharding-rule>
+        <rdb:props>
+            <prop key="metrics.enable">false</prop>
+        </rdb:props>
+    </rdb:data-source>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"
+          p:dataSource-ref="dataSource_sharding"/>
+
+</beans>
